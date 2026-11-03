@@ -1,3 +1,4 @@
+
 const formLogin = document.getElementById('login-form')
 const statusLogin = document.getElementById('login-status')
 const botaoLogin = formLogin.querySelector('button[type="submit"]')
@@ -19,8 +20,13 @@ formLogin.addEventListener('submit', async (event) => {
       throw new Error(resultado.erro || 'Não foi possível entrar.')
     }
 
-    sessionStorage.setItem('usuarioLogadoNome', resultado.nome)
-    window.location.assign('/html/principalADM.html')
+    sessionStorage.setItem('usuario', JSON.stringify(resultado.usuario))
+    sessionStorage.setItem('usuarioLogadoNome', resultado.usuario.nome)
+    if (resultado.usuario.cargo === 'admin') {
+      window.location.href = '/html/principalADM.html'
+    } else {
+      window.location.href = '/html/principalusuario.html'
+    }
   } catch (erro) {
     statusLogin.textContent = erro.message || 'Não foi possível conectar ao servidor.'
   } finally {

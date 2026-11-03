@@ -27,7 +27,7 @@ router.post('/login', async (req, res) => {
 
   try {
     const usuario = db.prepare(`
-      SELECT nome, senha_hash, ativo FROM usuarios WHERE email = ?
+      SELECT nome, senha_hash, cargo, ativo FROM usuarios WHERE email = ?
     `).get(email)
 
     if (!usuario || !(await bcrypt.compare(senha, usuario.senha_hash))) {
@@ -37,7 +37,12 @@ router.post('/login', async (req, res) => {
       return res.status(403).json({ erro: 'Esta conta está desativada.' })
     }
 
-    return res.json({ nome: usuario.nome })
+    return res.json({
+      usuario: {
+        nome: usuario.nome,
+        cargo: usuario.cargo === 'administrador' ? 'admin' : 'usuario'
+      }
+    })
   } catch (erro) {
     console.error(erro)
     return res.status(500).json({ erro: 'Não foi possível entrar na conta.' })

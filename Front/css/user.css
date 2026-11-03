@@ -297,7 +297,8 @@
   font-weight: 700;
 }
 
-.edit-form input {
+.edit-form input,
+.edit-form select {
   width: 100%;
   min-height: 41px;
   padding: 0 11px;
@@ -309,14 +310,26 @@
   font-size: 13px;
 }
 
-.edit-form input:focus {
+.edit-form select {
+  padding-right: 35px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2369708d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 11px center;
+  cursor: pointer;
+}
+
+.edit-form input:focus,
+.edit-form select:focus {
   border-color: #557de8;
   outline: 3px solid rgba(85, 125, 232, 0.13);
 }
 
-.edit-form input:disabled {
+.edit-form input:disabled,
+.edit-form select:disabled {
   color: #69708d;
   background: #f5f6fa;
+  cursor: not-allowed;
 }
 
 .edit-form .account-toggle {

@@ -103,7 +103,10 @@
             <input id="editar-nome" name="nome" type="text" autocomplete="name" required maxlength="120">
             <div class="dialog-field create-only" hidden>
                 <label for="editar-cargo">Perfil</label>
-                <input id="editar-cargo" name="cargo" type="text" autocomplete="organization-title" required disabled maxlength="80">
+                <select id="editar-cargo" name="cargo" required disabled>
+                 <option value="usuario">Usuário</option>
+                 <option value="administrador">Administrador</option>
+                </select>
             </div>
             <label id="senha-label" for="editar-senha">Nova senha</label>
             <input id="editar-senha" name="senha" type="password" autocomplete="new-password" placeholder="Deixe em branco para manter" minlength="8">
