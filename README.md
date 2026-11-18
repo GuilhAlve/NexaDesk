@@ -27,7 +27,7 @@
 <p><b>- Git e Github</b></p>
 <p><b>- NoSQL</b></p>
 
-<h1>🎮 Como acessar o sistema</h1>
+<h1>💻 Como acessar o sistema</h1>
 <p><b>Em breve link para acessar</b></p>
 
 <h1>🚀 Exemplo simples do que o sistema faz</h1>
