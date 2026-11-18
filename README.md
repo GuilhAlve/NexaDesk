@@ -23,26 +23,19 @@
 <p><b>- HTML</b></p>
 <p><b>- CSS</b></p>
 <p><b>- JavaScript</b></p>
-<p><b>- Python/Node.js</b></p>
+<p><b>- Node.js</b></p>
 <p><b>- Git e Github</b></p>
 <p><b>- NoSQL</b></p>
 
-<h1>🎮 Como executar o sistema</h1>
-<p><b>1. Entre em seu terminal e coloque "git clone https://github.com/GuilhAlve/tcc.git" (sem as aspas)</b></p>
-<p>Assim:</p><img src="./img/gitclone.png">
-
-<p><b>2. Depois entre na pasta colocando "cd tcc" e depois "code ." no terminal:</b></p>
-<img src="./img/tcc.png">
-
-<p><b>3. No terminal do vscode, coloque "npm start" (É necessário ter o npm instalado)</b></p>
-
+<h1>🎮 Como acessar o sistema</h1>
+<p><b>Em breve link para acessar</b></p>
 
 <h1>🚀 Exemplo simples do que o sistema faz</h1>
-<p><b>Usuário</b></p>↓
-<p><b>Cria uma conta ou faz login</b></p>↓
-<p><b>Abre um chamado</b></p>↓
-<p><b>Administrador recebe o chamado</b></p>↓
-<p><b>Administrador resolve o problema</b></p>↓
+<p><b>Usuário</b></p>
+<p><b>Cria uma conta ou faz login</b></p>
+<p><b>Abre um chamado</b></p>
+<p><b>Administrador recebe o chamado</b></p>
+<p><b>Administrador resolve o problema</b></p>
 <p><b>Chamado é encerrado</b></p>
 
 <h1>🖼️ Demonstração</h1>
