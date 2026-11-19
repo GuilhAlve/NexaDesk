@@ -7,20 +7,20 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/principalADM.css">
-  <link rel="stylesheet" href="/css/painel.css">
+  <link rel="stylesheet" href="../css/principalADM.css">
+  <link rel="stylesheet" href="../css/painel.css">
   <title>NexaDesk | Chamados</title>
 </head>
 <body>
   <div class="dashboard">
     <aside class="sidebar" aria-label="Navegação principal">
-      <a class="brand" href="/html/principalADM.html" aria-label="NexaDesk, início"><span class="brand-mark" aria-hidden="true">N</span><span>NexaDesk</span></a>
+      <a class="brand" href="principalADM.html" aria-label="NexaDesk, início"><span class="brand-mark" aria-hidden="true">N</span><span>NexaDesk</span></a>
       <nav class="navigation">
-        <a class="nav-link" href="/html/user.html"><span class="nav-icon" aria-hidden="true">♙</span>Usuários</a>
-        <a class="nav-link" href="/html/principalADM.html#resumo"><span class="nav-icon" aria-hidden="true">▥</span>Relatórios / Dashboard</a>
-        <a class="nav-link is-active" href="/html/ChamadosADM.html" aria-current="page"><span class="nav-icon" aria-hidden="true">▤</span>Chamados</a>
-        <a class="nav-link" href="/html/ConfigsADM.html"><span class="nav-icon" aria-hidden="true">⚙</span>Configurações</a>
-        <a class="nav-link" href="/html/chatbotADM.html"><span class="nav-icon" aria-hidden="true">?</span>Ajuda</a>
+        <a class="nav-link" href="user.html"><span class="nav-icon" aria-hidden="true">♙</span>Usuários</a>
+        <a class="nav-link" href="principalADM.html#resumo"><span class="nav-icon" aria-hidden="true">▥</span>Relatórios / Dashboard</a>
+        <a class="nav-link is-active" href="ChamadosADM.html" aria-current="page"><span class="nav-icon" aria-hidden="true">▤</span>Chamados</a>
+        <a class="nav-link" href="ConfigsADM.html"><span class="nav-icon" aria-hidden="true">⚙</span>Configurações</a>
+        <a class="nav-link" href="chatbotADM.html"><span class="nav-icon" aria-hidden="true">?</span>Ajuda</a>
       </nav>
       <div class="sidebar-footer">
         <div class="user-avatar" id="avatar-usuario" aria-hidden="true">U</div>
@@ -32,30 +32,81 @@
     <main class="main-content">
       <header class="page-header">
         <div><p class="eyebrow">NEXADESK <span>/</span> CENTRAL DE ATENDIMENTO</p><h1>Chamados</h1></div>
-        <div class="live-indicator"><span></span>Módulo em preparação</div>
+        <div class="live-indicator"><span></span>Atualização automática</div>
       </header>
 
       <div class="screen-stack">
         <section class="summary-grid" aria-label="Resumo de chamados">
-          <article class="summary-item"><span>Abertos</span><strong>--</strong></article>
-          <article class="summary-item"><span>Em andamento</span><strong>--</strong></article>
-          <article class="summary-item"><span>Concluídos</span><strong>--</strong></article>
+          <article class="summary-item"><span>Abertos</span><strong id="count-abertos">0</strong></article>
+          <article class="summary-item"><span>Em andamento</span><strong id="count-em-andamento">0</strong></article>
+          <article class="summary-item"><span>Concluídos</span><strong id="count-finalizados">0</strong></article>
         </section>
         <section class="content-panel">
           <div class="panel-heading">
-            <div><h2>Central de chamados</h2><p>Os chamados aparecerão aqui quando o módulo estiver conectado ao banco de dados.</p></div>
-            <a class="panel-action" href="/html/Abrir_chamado.html"><span aria-hidden="true">+</span>Abrir chamado</a>
+            <div><h2>Central de chamados</h2><p>Chamados registrados no servidor. A lista atualiza a cada 10 segundos.</p></div>
+            <a class="panel-action" href="#" data-open-ticket><span aria-hidden="true">+</span>Abrir chamado</a>
           </div>
-          <div class="empty-state compact">
+          <div class="empty-state compact" id="sem-chamados">
             <div class="empty-illustration" aria-hidden="true"><span class="ticket-shape">✓</span><span class="spark spark-one">✳</span><span class="spark spark-two">✳</span></div>
             <h2>Nenhum chamado para exibir</h2>
-            <p>A listagem e o acompanhamento de chamados ainda não estão conectados a uma API.</p>
+            <p>Ainda não há registros na lista de chamados.</p>
           </div>
+          <p class="form-notice ticket-status-message" id="ticket-status" role="status" aria-live="polite"></p>
+          <div class="ticket-list" id="lista-chamados" aria-live="polite"></div>
         </section>
       </div>
       <footer class="page-footer">NexaDesk <span>·</span> Central de atendimento</footer>
     </main>
   </div>
-  <script src="/JavaScript/painel.js" defer></script>
+
+  <div class="ticket-modal" id="ticket-modal" aria-hidden="true">
+    <div class="ticket-modal__content" role="dialog" aria-modal="true" aria-labelledby="ticket-modal-title">
+      <button type="button" class="ticket-modal__close" id="close-ticket-modal" aria-label="Fechar modal">×</button>
+      <h3 id="ticket-modal-title">Abrir chamado</h3>
+      <form id="ticket-form" class="ticket-form">
+        <label>
+          <span>Assunto</span>
+          <input type="text" name="titulo" placeholder="Digite o assunto do chamado" required>
+        </label>
+
+        <div class="ticket-form__grid">
+          <label>
+            <span>Categoria</span>
+            <select name="categoria">
+              <option value="Suporte">Suporte</option>
+              <option value="Financeiro">Financeiro</option>
+              <option value="Acesso">Acesso</option>
+              <option value="Pedido">Pedido</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Setor</span>
+            <select name="setor" required>
+              <option value="RH">RH</option>
+              <option value="Financeiro">Financeiro</option>
+              <option value="DP">DP</option>
+              <option value="TI">TI</option>
+              <option value="Jurídico">Jurídico</option>
+              <option value="Comercial">Comercial</option>
+              <option value="Outro">Outro</option>
+            </select>
+          </label>
+        </div>
+
+        <label>
+          <span>Descrição</span>
+          <textarea name="descricao" rows="5" placeholder="Descreva o problema ou a solicitação" required></textarea>
+        </label>
+
+        <div class="ticket-form__actions">
+          <button type="button" class="secondary-btn" id="cancelar-ticket">Cancelar</button>
+          <button type="submit" class="primary-btn">Enviar chamado</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../JavaScript/chamados.js" defer></script>
 </body>
 </html>

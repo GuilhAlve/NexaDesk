@@ -4,7 +4,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const diretorioAtual = path.dirname(fileURLToPath(import.meta.url))
-const db = new Database(path.join(diretorioAtual, 'banco.db'))
+const db = new Database(process.env.DATABASE_PATH || path.join(diretorioAtual, 'banco.db'))
 const colunas = db.pragma('table_info(usuarios)')
 
 const criarTabelaUsuarios = () => db.exec(`
@@ -48,5 +48,19 @@ if (colunas.length === 0) {
 } else if (!colunas.some((coluna) => coluna.name === 'ativo')) {
   db.exec('ALTER TABLE usuarios ADD COLUMN ativo INTEGER NOT NULL DEFAULT 1 CHECK (ativo IN (0, 1))')
 }
+
+db.exec(`
+  CREATE TABLE IF NOT EXISTS chamados (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    titulo TEXT NOT NULL,
+    categoria TEXT NOT NULL,
+    setor TEXT,
+    prioridade TEXT,
+    descricao TEXT NOT NULL,
+    usuario TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'Aberto',
+    criado_em TEXT NOT NULL
+  )
+`)
 
 export default db
