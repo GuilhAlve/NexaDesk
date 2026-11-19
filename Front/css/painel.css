@@ -362,6 +362,10 @@
   line-height: 1.5;
 }
 
+.form-notice[data-error="true"] {
+  color: #b42318;
+}
+
 .form-actions {
   grid-column: 1 / -1;
   display: flex;

@@ -7,29 +7,29 @@
    <link rel="preconnect" href="https://fonts.googleapis.com">
    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-   <link rel="stylesheet" href="/css/Principaluser.css">
+   <link rel="stylesheet" href="../css/Principaluser.css">
    <title>Central do usuario</title>
  </head>
  <body>
      <div class="dashboard">
         <aside class="sidebar" aria-label="Navegação principal">
-      <a class="brand" href="/Front/html/Principalusuario.html" aria-label="NexaDesk, início">
+      <a class="brand" href="Principalusuario.html" aria-label="NexaDesk, início">
         <span class="brand-mark" aria-hidden="true">N</span>
         <span>NexaDesk</span>
       </a>
 
       <nav class="navigation">
-        <a class="nav-link is-active" href="/html/Principalusuario.html">
+        <a class="nav-link is-active" href="Principalusuario.html">
           <span class="nav-icon" aria-hidden="true">♙</span> Menu principal
         </a>
        
-        <a class="nav-link" href="/html/Chamados.html" aria-current="page">
+        <a class="nav-link" href="#" data-open-ticket aria-current="page">
           <span class="nav-icon" aria-hidden="true">▤</span>Abrir chamado
         </a>
-        <a class="nav-link" href="/html/ConfigUsuarios.html">
+        <a class="nav-link" href="ConfigUsuarios.html">
           <span class="nav-icon" aria-hidden="true">⚙</span>Configurações
         </a>
-        <a class="nav-link" href="/html/chatbot.html">
+        <a class="nav-link" href="chatbot.html">
           <span class="nav-icon" aria-hidden="true">?</span>Ajuda
         </a>
       </nav>
@@ -69,12 +69,61 @@
         </div>
         <h2 id="estado-chamados">Nenhum chamado criado no momento</h2>
         <p>Quando criar novos chamados, eles aparecerão aqui.</p>
-        <a class="primary-action" href="">Criar chamados<span aria-hidden="true">+</span></a>
+        <a class="primary-action" href="#" id="abrir-chamado-btn" data-open-ticket>Criar chamados<span aria-hidden="true">+</span></a>
       </section>
+
+      <div class="ticket-modal" id="ticket-modal" aria-hidden="true">
+        <div class="ticket-modal__content" role="dialog" aria-modal="true" aria-labelledby="ticket-modal-title">
+          <button type="button" class="ticket-modal__close" id="close-ticket-modal" aria-label="Fechar modal">×</button>
+          <h3 id="ticket-modal-title">Abrir chamado</h3>
+          <form id="ticket-form" class="ticket-form">
+            <label>
+              <span>Assunto</span>
+              <input type="text" name="titulo" placeholder="Digite o assunto do chamado" required>
+            </label>
+
+            <div class="ticket-form__grid">
+              <label>
+                <span>Categoria</span>
+                <select name="categoria">
+                  <option value="Notebook">Notebook</option>
+                  <option value="Impressora">Impressora</option>
+                  <option value="Acesso">Acesso</option>
+                  <option value="Internet">Internet</option>
+                </select>
+              </label>
+
+              <label>
+                <span>Setor</span>
+                <select name="setor" required>
+                  <option value="RH">RH</option>
+                  <option value="Financeiro">Financeiro</option>
+                  <option value="DP">DP</option>
+                  <option value="TI">TI</option>
+                  <option value="Jurídico">Jurídico</option>
+                  <option value="Comercial">Comercial</option>
+                  <option value="Outro">Outro</option>
+                </select>
+              </label>
+            </div>
+
+            <label>
+              <span>Descrição</span>
+              <textarea name="descricao" rows="5" placeholder="Descreva o problema ou a solicitação" required></textarea>
+            </label>
+
+            <div class="ticket-form__actions">
+              <button type="button" class="secondary-btn" id="cancelar-ticket">Cancelar</button>
+              <button type="submit" class="primary-btn">Enviar chamado</button>
+            </div>
+          </form>
+        </div>
+      </div>
 
       <footer class="page-footer">NexaDesk <span>·</span> Central do usuario</footer>
     </main>
 
-    </div> 
+    </div>
+    <script src="../JavaScript/chamados.js" defer></script>
  </body>
 </html>

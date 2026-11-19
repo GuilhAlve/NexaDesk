@@ -7,31 +7,31 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/principalADM.css">
+  <link rel="stylesheet" href="../css/principalADM.css">
   <title>NexaDesk | Painel principal</title>
 </head>
 <body>
   <div class="dashboard">
     <aside class="sidebar" aria-label="Navegação principal">
-      <a class="brand" href="/html/principalADM.html" aria-label="NexaDesk, início">
+      <a class="brand" href="principalADM.html" aria-label="NexaDesk, início">
         <span class="brand-mark" aria-hidden="true">N</span>
         <span>NexaDesk</span>
       </a>
 
       <nav class="navigation">
-        <a class="nav-link" href="/html/user.html">
+        <a class="nav-link" href="user.html">
           <span class="nav-icon" aria-hidden="true">♙</span>Usuários
         </a>
         <a class="nav-link" href="#resumo">
           <span class="nav-icon" aria-hidden="true">▥</span>Relatórios / Dashboard
         </a>
-        <a class="nav-link is-active" href="/html/Chamados.html" aria-current="page">
+        <a class="nav-link is-active" href="ChamadosADM.html" aria-current="page">
           <span class="nav-icon" aria-hidden="true">▤</span>Chamados
         </a>
-        <a class="nav-link" href="/html/ConfigsADM.html">
+        <a class="nav-link" href="ConfigsADM.html">
           <span class="nav-icon" aria-hidden="true">⚙</span>Configurações
         </a>
-        <a class="nav-link" href="/html/chatbot.html">
+        <a class="nav-link" href="chatbot.html">
           <span class="nav-icon" aria-hidden="true">?</span>Ajuda
         </a>
       </nav>
@@ -67,17 +67,17 @@
       <section class="stats-grid" id="resumo" aria-label="Resumo dos chamados">
         <article class="stat-card stat-open">
           <div class="stat-heading"><span class="stat-icon" aria-hidden="true">＋</span><span>Chamados abertos</span></div>
-          <strong>0</strong>
+          <strong id="count-chamados-abertos">0</strong>
           <span class="stat-note">Aguardando atendimento</span>
         </article>
         <article class="stat-card stat-progress">
           <div class="stat-heading"><span class="stat-icon" aria-hidden="true">◷</span><span>Em andamento</span></div>
-          <strong>0</strong>
+          <strong id="count-chamados-andamento">0</strong>
           <span class="stat-note">Em atendimento pela equipe</span>
         </article>
         <article class="stat-card stat-done">
           <div class="stat-heading"><span class="stat-icon" aria-hidden="true">✓</span><span>Finalizados</span></div>
-          <strong>0</strong>
+          <strong id="count-chamados-finalizados">0</strong>
           <span class="stat-note">Concluídos até agora</span>
         </article>
       </section>
@@ -89,13 +89,14 @@
           <span class="spark spark-two">✳</span>
         </div>
         <h2 id="estado-chamados">Não há chamados no momento</h2>
-        <p>Quando houver novas solicitações, elas aparecerão aqui.</p>
-        <a class="primary-action" href="/html/Chamados.html">Gerenciar chamados <span aria-hidden="true">→</span></a>
+        <p id="resumo-ultimo-chamado">Quando houver novas solicitações, elas aparecerão aqui.</p>
+        <a class="primary-action" href="ChamadosADM.html">Gerenciar chamados <span aria-hidden="true">→</span></a>
       </section>
+      <p class="dashboard-status" id="dashboard-ticket-status" role="status" aria-live="polite"></p>
 
       <footer class="page-footer">NexaDesk <span>·</span> Gerenciamento de chamados</footer>
     </main>
   </div>
-  <script src="/JavaScript/principalADM.js" defer></script>
+  <script src="../JavaScript/principalADM.js" defer></script>
 </body>
 </html>
