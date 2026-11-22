@@ -22,6 +22,8 @@ formLogin.addEventListener('submit', async (event) => {
 
     sessionStorage.setItem('usuario', JSON.stringify(resultado.usuario))
     sessionStorage.setItem('usuarioLogadoNome', resultado.usuario.nome)
+    sessionStorage.setItem('organizacaoId', String(resultado.usuario.organizacaoId))
+    sessionStorage.setItem('organizacaoNome', resultado.usuario.organizacaoNome || '')
     if (resultado.usuario.cargo === 'admin') {
       window.location.href = '/html/principalADM.html'
     } else {

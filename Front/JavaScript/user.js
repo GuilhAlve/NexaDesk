@@ -1,4 +1,5 @@
 const nomeUsuario = sessionStorage.getItem('usuarioLogadoNome')
+const organizacaoId = sessionStorage.getItem('organizacaoId')
 if (!nomeUsuario) {
     window.location.replace('/html/login.html')
 }
@@ -13,6 +14,9 @@ const campoEmail = document.getElementById('editar-email')
 const campoNome = document.getElementById('editar-nome')
 const campoSenha = document.getElementById('editar-senha')
 const campoCargo = document.getElementById('editar-cargo')
+const campoComputador = document.getElementById('editar-computador')
+const campoCodigoAcesso = document.getElementById('editar-codigo-acesso')
+const botaoGerarCodigo = document.getElementById('gerar-codigo-acesso')
 const campoAtivo = document.getElementById('editar-ativo')
 const statusDialogo = document.getElementById('dialog-status')
 const camposCadastro = document.querySelectorAll('.create-only')
@@ -24,18 +28,30 @@ let usuarios = []
 let usuarioEmEdicao
 let modoDialogo = 'edit'
 
+function gerarCodigoAcesso() {
+    const caracteres = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
+    const valores = new Uint32Array(8)
+    crypto.getRandomValues(valores)
+    campoCodigoAcesso.value = Array.from(valores, (valor) =>
+        caracteres[valor % caracteres.length]
+    ).join('')
+}
+
 document.getElementById('nome-sidebar').textContent = nomeUsuario
 document.getElementById('avatar-usuario').textContent = nomeUsuario.trim().charAt(0).toUpperCase()
 document.getElementById('sair').addEventListener('click', () => {
     sessionStorage.removeItem('usuarioLogadoNome')
+    sessionStorage.removeItem('usuario')
+    sessionStorage.removeItem('organizacaoId')
+    sessionStorage.removeItem('organizacaoNome')
     window.location.assign('/html/login.html')
 })
 
 function mostrarUsuarios() {
     const termo = campoBusca.value.trim().toLocaleLowerCase('pt-BR')
     const usuariosFiltrados = usuarios.filter((usuario) =>
-        [usuario.nome, usuario.email, usuario.cargo, usuario.ativo ? 'ativa' : 'desativada']
-            .some((valor) => valor.toLocaleLowerCase('pt-BR').includes(termo))
+        [usuario.nome, usuario.email, usuario.cargo, usuario.computador_nome, usuario.ativo ? 'ativa' : 'desativada']
+            .some((valor) => String(valor || '').toLocaleLowerCase('pt-BR').includes(termo))
     )
 
     tabelaUsuarios.replaceChildren()
@@ -56,6 +72,10 @@ function mostrarUsuarios() {
         etiquetaCargo.className = 'user-role'
         etiquetaCargo.textContent = usuario.cargo
         cargo.append(etiquetaCargo)
+
+        const computador = document.createElement('td')
+        computador.className = 'user-email-cell'
+        computador.textContent = usuario.computador_nome || 'Não registrado'
 
         const status = document.createElement('td')
         const etiquetaStatus = document.createElement('span')
@@ -79,7 +99,7 @@ function mostrarUsuarios() {
             grupoAcoes.append(botao)
         }
         acoes.append(grupoAcoes)
-        linha.append(nome, email, cargo, status, acoes)
+        linha.append(nome, email, cargo, computador, status, acoes)
         tabelaUsuarios.append(linha)
     }
 
@@ -93,7 +113,9 @@ async function carregarUsuarios() {
     document.getElementById('atualizar-usuarios').disabled = true
 
     try {
-        const resposta = await fetch('/api/usuarios')
+        const resposta = await fetch('/api/usuarios', {
+            headers: { 'X-Organization-Id': organizacaoId }
+        })
         const resultado = await resposta.json()
         if (!resposta.ok) {
             throw new Error(resultado.erro || 'Não foi possível carregar os usuários.')
@@ -117,8 +139,14 @@ function abrirEdicao(usuario) {
     camposEdicao.forEach((campo) => { campo.hidden = false })
     campoEmail.disabled = true
     campoEmail.required = false
-    campoCargo.disabled = true
-    campoCargo.required = false
+    campoCargo.disabled = false
+    campoCargo.required = true
+    campoComputador.disabled = false
+    campoComputador.required = true
+    campoCodigoAcesso.disabled = false
+    campoCodigoAcesso.required = false
+    campoCodigoAcesso.placeholder = 'Gerar novo código'
+    botaoGerarCodigo.disabled = false
     campoSenha.required = false
     campoSenha.placeholder = 'Deixe em branco para manter'
     tituloDialogo.textContent = 'Editar usuário'
@@ -126,6 +154,16 @@ function abrirEdicao(usuario) {
     botaoSalvar.textContent = 'Salvar alterações'
     campoEmail.value = usuario.email
     campoNome.value = usuario.nome
+    let cargoExiste = Array.from(campoCargo.options).some((option) => option.value === usuario.cargo)
+    if (!cargoExiste) {
+        const option = document.createElement('option')
+        option.value = usuario.cargo
+        option.textContent = usuario.cargo
+        campoCargo.append(option)
+    }
+    campoCargo.value = usuario.cargo
+    campoComputador.value = usuario.computador_nome || ''
+    campoCodigoAcesso.value = ''
     campoSenha.value = ''
     campoAtivo.checked = Boolean(usuario.ativo)
     statusDialogo.textContent = ''
@@ -143,11 +181,17 @@ function abrirCadastro() {
     campoEmail.required = true
     campoCargo.disabled = false
     campoCargo.required = true
+    campoComputador.disabled = false
+    campoComputador.required = true
+    campoCodigoAcesso.disabled = false
+    campoCodigoAcesso.required = true
+    botaoGerarCodigo.disabled = false
     campoSenha.required = true
     campoSenha.placeholder = 'Mínimo de 8 caracteres'
     tituloDialogo.textContent = 'Novo usuário'
     textoDialogo.textContent = 'NOVA CONTA'
     botaoSalvar.textContent = 'Criar usuário'
+    gerarCodigoAcesso()
     statusDialogo.textContent = ''
     dialogEditar.showModal()
     campoNome.focus()
@@ -155,6 +199,7 @@ function abrirCadastro() {
 
 document.getElementById('atualizar-usuarios').addEventListener('click', carregarUsuarios)
 document.getElementById('novo-usuario').addEventListener('click', abrirCadastro)
+botaoGerarCodigo.addEventListener('click', gerarCodigoAcesso)
 campoBusca.addEventListener('input', mostrarUsuarios)
 tabelaUsuarios.addEventListener('click', async (event) => {
     const botao = event.target.closest('button[data-user-action]')
@@ -171,7 +216,10 @@ tabelaUsuarios.addEventListener('click', async (event) => {
 
     botao.disabled = true
     try {
-        const resposta = await fetch(`/api/usuarios/${usuario.id}`, { method: 'DELETE' })
+        const resposta = await fetch(`/api/usuarios/${usuario.id}`, {
+            method: 'DELETE',
+            headers: { 'X-Organization-Id': organizacaoId }
+        })
         const resultado = await resposta.json()
         if (!resposta.ok) {
             throw new Error(resultado.erro || 'Não foi possível remover o usuário.')
@@ -198,16 +246,24 @@ formEditar.addEventListener('submit', async (event) => {
             dados.email = campoEmail.value.trim()
             dados.senha = campoSenha.value
             dados.cargo = campoCargo.value.trim()
+            dados.computador = campoComputador.value.trim()
+            dados.codigoAcesso = campoCodigoAcesso.value.trim()
             url = '/api/usuarios'
             metodo = 'POST'
-        } else if (campoSenha.value) {
-            dados.senha = campoSenha.value
+        } else {
+            dados.cargo = campoCargo.value.trim()
+            dados.computador = campoComputador.value.trim()
+            if (campoSenha.value) dados.senha = campoSenha.value
+            if (campoCodigoAcesso.value.trim()) dados.codigoAcesso = campoCodigoAcesso.value.trim()
         }
         if (!cadastro) dados.ativo = campoAtivo.checked
 
         const resposta = await fetch(url, {
             method: metodo,
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Organization-Id': organizacaoId
+            },
             body: JSON.stringify(dados)
         })
         const resultado = await resposta.json()

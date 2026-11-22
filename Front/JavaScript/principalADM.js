@@ -16,7 +16,11 @@ document.getElementById('sair').addEventListener('click', () => {
 async function loadTicketSummary() {
   const status = document.getElementById('dashboard-ticket-status')
   try {
-    const resposta = await fetch('/api/chamados')
+    const resposta = await fetch('/api/chamados', {
+      headers: {
+        'X-Organization-Id': sessionStorage.getItem('organizacaoId') || ''
+      }
+    })
     const chamados = await resposta.json()
     if (!resposta.ok) {
       throw new Error(chamados.erro || 'Não foi possível carregar os chamados.')

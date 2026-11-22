@@ -5,13 +5,18 @@ if (!nomeUsuario) {
 
 const elementoNome = document.getElementById('nome-sidebar')
 const elementoAvatar = document.getElementById('avatar-usuario')
+const elementoNomePrincipal = document.getElementById('nome-usuario')
 if (elementoNome && nomeUsuario) elementoNome.textContent = nomeUsuario
+if (elementoNomePrincipal && nomeUsuario) elementoNomePrincipal.textContent = nomeUsuario
 if (elementoAvatar && nomeUsuario) {
   elementoAvatar.textContent = nomeUsuario.trim().charAt(0).toUpperCase()
 }
 
 document.getElementById('sair')?.addEventListener('click', () => {
   sessionStorage.removeItem('usuarioLogadoNome')
+  sessionStorage.removeItem('usuario')
+  sessionStorage.removeItem('organizacaoId')
+  sessionStorage.removeItem('organizacaoNome')
   window.location.assign('/html/login.html')
 })
 
