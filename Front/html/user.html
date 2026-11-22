@@ -73,6 +73,7 @@
                                 <th scope="col">Nome</th>
                                 <th scope="col">E-mail</th>
                                 <th scope="col">Perfil</th>
+                                <th scope="col">Computador</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Ações</th>
                             </tr>
@@ -101,12 +102,24 @@
             </div>
             <label for="editar-nome">Nome</label>
             <input id="editar-nome" name="nome" type="text" autocomplete="name" required maxlength="120">
-            <div class="dialog-field create-only" hidden>
+            <div class="dialog-field">
                 <label for="editar-cargo">Perfil</label>
                 <select id="editar-cargo" name="cargo" required disabled>
                  <option value="usuario">Usuário</option>
                  <option value="administrador">Administrador</option>
                 </select>
+            </div>
+            <div class="dialog-field">
+                <label for="editar-computador">Nome do computador</label>
+                <input id="editar-computador" name="computador" type="text" placeholder="Ex.: Notebook TI" required disabled maxlength="120">
+            </div>
+            <div class="dialog-field">
+                <label for="editar-codigo-acesso">Código de acesso remoto</label>
+                <div class="remote-code-field">
+                    <input id="editar-codigo-acesso" name="codigoAcesso" type="text" autocomplete="off" placeholder="Gerar novo código" required disabled minlength="4" maxlength="20" readonly>
+                    <button id="gerar-codigo-acesso" type="button" class="remote-code-button">Gerar código</button>
+                </div>
+                <p class="account-hint">O código pode ser copiado pelo administrador. Ao salvar, ele fica protegido no servidor.</p>
             </div>
             <label id="senha-label" for="editar-senha">Nova senha</label>
             <input id="editar-senha" name="senha" type="password" autocomplete="new-password" placeholder="Deixe em branco para manter" minlength="8">

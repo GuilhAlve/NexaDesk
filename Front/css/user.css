@@ -332,6 +332,36 @@
   cursor: not-allowed;
 }
 
+.remote-code-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.remote-code-field input {
+  font-family: "Space Grotesk", "Segoe UI", monospace;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.remote-code-button {
+  min-height: 41px;
+  padding: 0 12px;
+  color: #2869ed;
+  background: #edf3ff;
+  border: 1px solid #dbe7ff;
+  border-radius: 6px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.remote-code-button:hover {
+  background: #dde8ff;
+}
+
 .edit-form .account-toggle {
   display: flex;
   align-items: center;

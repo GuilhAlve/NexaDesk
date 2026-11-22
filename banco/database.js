@@ -14,7 +14,10 @@ const criarTabelaUsuarios = () => db.exec(`
     email TEXT NOT NULL UNIQUE,
     senha_hash TEXT NOT NULL,
     cargo TEXT NOT NULL,
-    ativo INTEGER NOT NULL DEFAULT 1 CHECK (ativo IN (0, 1))
+    ativo INTEGER NOT NULL DEFAULT 1 CHECK (ativo IN (0, 1)),
+    computador_nome TEXT,
+    codigo_acesso_hash TEXT,
+    organizacao_id INTEGER
   )
 `)
 
@@ -49,6 +52,31 @@ if (colunas.length === 0) {
   db.exec('ALTER TABLE usuarios ADD COLUMN ativo INTEGER NOT NULL DEFAULT 1 CHECK (ativo IN (0, 1))')
 }
 
+const colunasAtuais = db.pragma('table_info(usuarios)')
+if (!colunasAtuais.some((coluna) => coluna.name === 'computador_nome')) {
+  db.exec('ALTER TABLE usuarios ADD COLUMN computador_nome TEXT')
+}
+if (!colunasAtuais.some((coluna) => coluna.name === 'codigo_acesso_hash')) {
+  db.exec('ALTER TABLE usuarios ADD COLUMN codigo_acesso_hash TEXT')
+}
+if (!colunasAtuais.some((coluna) => coluna.name === 'organizacao_id')) {
+  db.exec('ALTER TABLE usuarios ADD COLUMN organizacao_id INTEGER')
+}
+
+db.exec(`
+  CREATE TABLE IF NOT EXISTS organizacoes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome TEXT NOT NULL,
+    criado_em TEXT NOT NULL,
+    administrador_id INTEGER
+  )
+`)
+
+const colunasOrganizacoes = db.pragma('table_info(organizacoes)')
+if (!colunasOrganizacoes.some((coluna) => coluna.name === 'administrador_id')) {
+  db.exec('ALTER TABLE organizacoes ADD COLUMN administrador_id INTEGER')
+}
+
 db.exec(`
   CREATE TABLE IF NOT EXISTS chamados (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -59,8 +87,22 @@ db.exec(`
     descricao TEXT NOT NULL,
     usuario TEXT NOT NULL,
     status TEXT NOT NULL DEFAULT 'Aberto',
-    criado_em TEXT NOT NULL
+    criado_em TEXT NOT NULL,
+    atendente TEXT,
+    iniciado_em TEXT,
+    organizacao_id INTEGER
   )
 `)
+
+const colunasChamados = db.pragma('table_info(chamados)')
+if (!colunasChamados.some((coluna) => coluna.name === 'atendente')) {
+  db.exec('ALTER TABLE chamados ADD COLUMN atendente TEXT')
+}
+if (!colunasChamados.some((coluna) => coluna.name === 'iniciado_em')) {
+  db.exec('ALTER TABLE chamados ADD COLUMN iniciado_em TEXT')
+}
+if (!colunasChamados.some((coluna) => coluna.name === 'organizacao_id')) {
+  db.exec('ALTER TABLE chamados ADD COLUMN organizacao_id INTEGER')
+}
 
 export default db

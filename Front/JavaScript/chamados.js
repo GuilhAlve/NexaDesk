@@ -7,6 +7,14 @@ function escapeHtml(value) {
     .replace(/'/g, '&#039;');
 }
 
+function organizationHeaders(includeJson = false) {
+  const headers = {
+    'X-Organization-Id': sessionStorage.getItem('organizacaoId') || ''
+  };
+  if (includeJson) headers['Content-Type'] = 'application/json';
+  return headers;
+}
+
 function openTicketModal() {
   const modal = document.getElementById('ticket-modal');
   if (!modal) return;
@@ -63,6 +71,11 @@ function renderAdminTickets(tickets) {
         ? new Date(ticket.criadoEm).toLocaleString('pt-BR')
         : '');
       const concluido = ticket.status === 'Concluído';
+      const emAndamento = ticket.status === 'Em andamento';
+      const atendente = escapeHtml(ticket.atendente || '');
+      const iniciadoEm = ticket.iniciadoEm
+        ? escapeHtml(new Date(ticket.iniciadoEm).toLocaleString('pt-BR'))
+        : '';
 
       return `
         <article class="ticket-card" data-ticket-id="${id}">
@@ -87,10 +100,18 @@ function renderAdminTickets(tickets) {
               <div><dt>Setor</dt><dd>${escapeHtml(ticket.setor || 'Não informado')}</dd></div>
               <div><dt>Prioridade</dt><dd>${prioridade}</dd></div>
               <div><dt>Descrição</dt><dd>${mensagem}</dd></div>
+              ${atendente
+                ? `<div><dt>Atendente</dt><dd>${atendente}</dd></div><div><dt>Iniciado em</dt><dd>${iniciadoEm}</dd></div>`
+                : ''}
             </dl>
             ${concluido
               ? '<p class="ticket-card__completed">Chamado concluído</p>'
-              : '<button class="panel-action ticket-card__complete" type="button" data-conclude-ticket>Concluir chamado</button>'}
+              : `<div class="ticket-card__actions">
+                  ${emAndamento
+                    ? ''
+                    : '<button class="panel-action ticket-card__start" type="button" data-start-ticket>Iniciar atendimento</button>'}
+                  <button class="panel-action ticket-card__complete" type="button" data-conclude-ticket>Concluir chamado</button>
+                </div>`}
           </details>
         </article>
       `;
@@ -113,7 +134,9 @@ function updateSummaryCounts(tickets) {
 }
 
 async function loadTickets() {
-  const resposta = await fetch('/api/chamados');
+  const resposta = await fetch('/api/chamados', {
+    headers: organizationHeaders()
+  });
   const resultado = await resposta.json();
   if (!resposta.ok) {
     throw new Error(resultado.erro || 'Não foi possível carregar os chamados.');
@@ -126,7 +149,7 @@ async function loadTickets() {
 async function sendTicket(ticket) {
   const resposta = await fetch('/api/chamados', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: organizationHeaders(true),
     body: JSON.stringify(ticket)
   });
   const resultado = await resposta.json();
@@ -138,7 +161,7 @@ async function sendTicket(ticket) {
 async function concludeTicket(id) {
   const resposta = await fetch(`/api/chamados/${encodeURIComponent(id)}/status`, {
     method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
+    headers: organizationHeaders(true),
     body: JSON.stringify({ status: 'Concluído' })
   });
   const resultado = await resposta.json();
@@ -147,23 +170,47 @@ async function concludeTicket(id) {
   }
 }
 
+async function startTicket(id) {
+  const resposta = await fetch(`/api/chamados/${encodeURIComponent(id)}/status`, {
+    method: 'PATCH',
+    headers: organizationHeaders(true),
+    body: JSON.stringify({
+      status: 'Em andamento',
+      atendente: currentUser()
+    })
+  });
+  const resultado = await resposta.json();
+  if (!resposta.ok) {
+    throw new Error(resultado.erro || 'Não foi possível iniciar o atendimento.');
+  }
+}
+
 function bindAdminTicketActions() {
   const list = document.getElementById('lista-chamados');
   if (!list) return;
 
   list.addEventListener('click', async (event) => {
-    const button = event.target.closest('[data-conclude-ticket]');
+    const startButton = event.target.closest('[data-start-ticket]');
+    const concludeButton = event.target.closest('[data-conclude-ticket]');
+    const button = startButton || concludeButton;
     if (!button) return;
 
     const ticket = button.closest('[data-ticket-id]');
     if (!ticket) return;
 
     button.disabled = true;
-    announce('Concluindo chamado...');
+    const iniciando = Boolean(startButton);
+    announce(iniciando ? 'Iniciando atendimento...' : 'Concluindo chamado...');
     try {
-      await concludeTicket(ticket.dataset.ticketId);
+      if (iniciando) {
+        await startTicket(ticket.dataset.ticketId);
+      } else {
+        await concludeTicket(ticket.dataset.ticketId);
+      }
       await loadTickets();
-      announce('Chamado concluído com sucesso.');
+      announce(iniciando
+        ? 'Atendimento iniciado com sucesso.'
+        : 'Chamado concluído com sucesso.');
     } catch (erro) {
       announce(erro.message || 'Não foi possível concluir o chamado.', true);
       button.disabled = false;

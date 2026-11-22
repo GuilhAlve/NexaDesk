@@ -2,6 +2,7 @@ import express from 'express'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import usuariosRouter from './backend/routes/usuarios.js'
+import organizacoesRouter from './backend/routes/organizacoes.js'
 import chamadosRouter from './backend/routes/chamados.js'
 
 const site = express()
@@ -11,6 +12,7 @@ site.use(express.json())
 site.use(express.static(path.join(diretorioAtual, 'Front')))
 site.get('/', (_req, res) => res.redirect('/html/user.html'))
 site.use('/api/usuarios', usuariosRouter)
+site.use('/api/organizacoes', organizacoesRouter)
 site.use('/api/chamados', chamadosRouter)
 
 const porta = process.env.PORT || 3000

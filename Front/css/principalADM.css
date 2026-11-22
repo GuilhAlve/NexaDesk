@@ -671,6 +671,17 @@ a {
   margin-top: 4px;
 }
 
+.ticket-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.ticket-card__start {
+  background: #2869ed;
+}
+
 .ticket-card__completed {
   margin: 12px 0 0;
   color: #188b68;
