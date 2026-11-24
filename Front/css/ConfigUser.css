@@ -408,6 +408,17 @@ a {
   font-size: 13px;
 }
 
+.settings-panel {
+  display: none;
+  min-height: 240px;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.86);
+  border-radius: 8px;
+  box-shadow: 0 10px 24px rgba(47, 55, 131, 0.07);
+}
+
+
 .primary-action {
   display: inline-flex;
   align-items: center;
