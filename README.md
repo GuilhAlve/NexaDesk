@@ -28,7 +28,7 @@
 <p><b>- NoSQL</b></p>
 
 <h1>💻 Como acessar o sistema</h1>
-<p><b>Em breve link para acessar</b></p>
+<p><b>(https://nexadesk-59xr.onrender.com)</b></p>
 
 <h1>🚀 Exemplo simples do que o sistema faz</h1>
 <p><b>Usuário</b></p>
