@@ -20,8 +20,8 @@
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "better-sqlite3": "^12.2.0",
-    "content-type": "^2.1.0",
-    "express": "^5.2.1"
+    "content-type": "1.0.5",
+    "express": "5.1.0"
   },
   "allowScripts": {
     "better-sqlite3@12.11.1": true
